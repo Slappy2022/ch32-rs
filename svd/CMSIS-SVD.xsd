@@ -423,7 +423,7 @@
                                                        (read and write) accesses -->
       <xs:element name="usage" type="enumUsageType" minOccurs="0"/>
       <!-- enumeratedValue derivedFrom=<identifierType> -->
-      <xs:element name="enumeratedValue" type="enumeratedValueType" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="enumeratedValue" type="enumeratedValueType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="derivedFrom" type="identifierType" use="optional"/>
   </xs:complexType>
