@@ -25,6 +25,7 @@ CRATE_DOC_FEATURES = {
     "ch32v3": ["rt", "ch32v30x", "critical-section"],
     "ch32v2": ["rt", "ch32v20x", "critical-section"],
     "ch32v1": ["rt", "ch32v103", "critical-section"],
+    "ch32v0": ["rt", "ch32v003", "critical-section"],
     "ch57x": ["rt", "ch57x", "critical-section"],
     "ch56x": ["rt", "ch56x", "critical-section"],
     "ch58x": ["rt", "ch58x", "critical-section"],
@@ -34,6 +35,7 @@ CRATE_DOC_TARGETS = {
     "ch32v3": "riscv32imac-unknown-none-elf",
     "ch32v2": "riscv32imac-unknown-none-elf",
     "ch32v1": "riscv32imac-unknown-none-elf",
+    "ch32v0": "riscv32i-unknown-none-elf", # FIXME: RV32EC support is not included in Rust
     "ch56x": "riscv32imac-unknown-none-elf",
     "ch57x": "riscv32imac-unknown-none-elf",
     "ch58x": "riscv32imac-unknown-none-elf",
@@ -54,8 +56,7 @@ license = "MIT/Apache-2.0"
 
 [dependencies]
 critical-section = {{ version = "1.0", optional = true }}
-riscv = "0.9.0"
-riscv-rt = {{ version = "0.10.0", optional = true }}
+riscv = "0.10.1"
 vcell = "0.1.0"
 
 [package.metadata.docs.rs]
@@ -64,8 +65,8 @@ default-target = "{doc_target}"
 targets = []
 
 [features]
-default = ["rt"]
-rt = ["riscv-rt"]
+default = []
+rt = []
 {features}
 """
 
@@ -114,11 +115,12 @@ compile the device(s) you want. To use, in your Cargo.toml:
 ```toml
 [dependencies.{crate}]
 version = "{version}"
-features = ["{device}"]
-```
+features = ["{device}", "critical-section"]
 
-The `rt` feature is enabled by default and brings in support for `riscv-rt`.
-To disable, specify `default-features = false` in `Cargo.toml`.
+[dependencies.riscv]
+version = "0.10.1"
+features = ["critical-section-single-hart"]
+```
 
 In your code:
 
@@ -184,10 +186,6 @@ def main(devices_path, yes, families):
             family = yamlfile.split('.')[0]
         else:
             family = re.match(r'ch32[a-z]*[0-9]', yamlfile)[0]
-
-        if family == 'ch32v0':
-            continue # skip for now
-
 
         device = os.path.splitext(yamlfile)[0].lower()
         if len(families) == 0 or family in families:

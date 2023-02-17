@@ -15,8 +15,7 @@ RUN cargo install svd2rust
 RUN rustup component add rustfmt
 
 WORKDIR /src/
-COPY . .
+#COPY . .
 
-RUN scripts/generate.sh
-
-CMD /bin/bash
+CMD scripts/generate.sh
+#CMD /bin/bash

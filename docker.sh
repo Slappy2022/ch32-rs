@@ -11,7 +11,9 @@ readonly DIR=.
 
 main() {
   docker build -t "${TAG}" "${DIR}"
-  docker run -it "${TAG}"
+  docker run -it \
+    -v "${SCRIPT_DIR}":/src \
+    "${TAG}" 
 }
 
 main "$@"
